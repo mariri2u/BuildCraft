@@ -14,11 +14,10 @@ import java.util.Collection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
-import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
+import net.minecraftforge.common.IPlantable;
 import buildcraft.api.boards.RedstoneBoardRobot;
 import buildcraft.api.boards.RedstoneBoardRobotNBT;
 import buildcraft.api.core.BlockIndex;
@@ -81,7 +80,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 				startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stackFilter));
 			}
 		} else {
-			if (robot.getHeldItem().getItem() instanceof ItemSeeds) {
+			if (robot.getHeldItem().getItem() instanceof IPlantable) {
 				startDelegateAI(new AIRobotSearchBlock(robot, new IBlockFilter() {
 					@Override
 					public boolean matches(World world, int x, int y, int z) {
@@ -140,7 +139,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 	private static class SeedFilter implements IStackFilter {
 		@Override
 		public boolean matches(ItemStack stack) {
-			return stack.getItem() instanceof ItemSeeds;
+			return stack.getItem() instanceof IPlantable;
 		}
 	}
 
