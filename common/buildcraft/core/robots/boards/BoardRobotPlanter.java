@@ -14,9 +14,11 @@ import java.util.Collection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import buildcraft.api.boards.RedstoneBoardRobot;
 import buildcraft.api.boards.RedstoneBoardRobotNBT;
@@ -80,11 +82,22 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 				startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stackFilter));
 			}
 		} else {
-			if (robot.getHeldItem().getItem() instanceof IPlantable) {
+			if (robot.getHeldItem().getItem() instanceof IPlantable && 
+					((IPlantable)robot.getHeldItem().getItem()).getPlantType(robot.worldObj, robot.chunkCoordX, robot.chunkCoordY, robot.chunkCoordZ) == EnumPlantType.Crop) {
 				startDelegateAI(new AIRobotSearchBlock(robot, new IBlockFilter() {
 					@Override
 					public boolean matches(World world, int x, int y, int z) {
 						return BuildCraftAPI.isFarmlandProperty.get(world, x, y, z)
+								&& !robot.getRegistry().isTaken(new ResourceIdBlock(x, y, z))
+								&& isAirAbove(world, x, y, z);
+					}
+				}));
+			} else if(robot.getHeldItem().getItem() instanceof IPlantable && 
+					((IPlantable)robot.getHeldItem().getItem()).getPlantType(robot.worldObj, robot.chunkCoordX, robot.chunkCoordY, robot.chunkCoordZ) == EnumPlantType.Nether){
+				startDelegateAI(new AIRobotSearchBlock(robot, new IBlockFilter() {
+					@Override
+					public boolean matches(World world, int x, int y, int z) {
+						return world.getBlock(x, y, z) == Blocks.soul_sand
 								&& !robot.getRegistry().isTaken(new ResourceIdBlock(x, y, z))
 								&& isAirAbove(world, x, y, z);
 					}
